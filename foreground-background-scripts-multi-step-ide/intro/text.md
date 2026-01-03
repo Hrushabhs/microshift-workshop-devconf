@@ -1,6 +1,9 @@
+# Welcome to the Airgapped MicroShift Workshop
 
-> <strong>Note</strong>: logs of the *intro* background script can be found at `/var/log/killercoda`
+The environment is being prepared for you. We have already:
+- Installed **skopeo** and **git**.
+- Started a **local container registry** at `localhost:5000`.
+- Mirrored all required **MicroShift** and **OKD** images to the local registry.
+- Cloned the workshop source code into `~/workshop`.
 
-<br>
-
-What an Intro! It even greets us in the terminal!
+**Please wait for the progress bar in the terminal to finish before clicking "Start".**
