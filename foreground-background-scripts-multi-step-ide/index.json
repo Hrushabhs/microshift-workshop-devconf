@@ -1,38 +1,29 @@
 {
-  "title": "Foreground Background Scripts Multi Steps (IDE)",
-  "description": "Multiple steps can have foreground and background scripts",
+  "title": "Build Offline-First MicroShift",
+  "description": "Learn to embed container images into a bootable OS image.",
   "details": {
     "intro": {
-      "title": "Intro",
       "text": "intro/text.md",
       "foreground": "intro/foreground.sh",
       "background": "intro/background.sh"
     },
     "steps": [
       {
-        "title": "Step1",
+        "title": "Mirroring Images",
         "text": "step1/text.md",
-        "foreground": "step1/foreground.sh",
-        "background": "step1/background.sh",
-        "verify": "step1/verify.sh"
+        "foreground": "step1/foreground.sh"
       },
       {
-        "title": "Step2",
-        "text": "step2/text.md",
-        "foreground": "step2/foreground.sh",
-        "background": "step2/background.sh",
-        "verify": "step2/verify.sh"
+        "title": "Build the Bootc Image",
+        "text": "step2/text.md"
       }
     ],
     "finish": {
-      "title": "Finish",
-      "text": "finish/text.md",
-      "foreground": "finish/foreground.sh",
-      "background": "finish/background.sh"
+      "text": "finish/text.md"
     }
   },
   "backend": {
-    "imageid": "ubuntu"
+    "imageid": "fedora"
   },
   "interface": {
     "layout": "ide"
