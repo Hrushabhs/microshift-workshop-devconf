@@ -1,6 +1,12 @@
 {
-  "title": "Build Offline-First MicroShift",
-  "description": "Learn to embed container images into a bootable OS image.",
+  "title": "Airgapped MicroShift Deployment",
+  "description": "Learn to build offline-ready bootc images.",
+  "backend": {
+    "imageid": "fedora"
+  },
+  "interface": {
+    "layout": "ide"
+  },
   "details": {
     "intro": {
       "text": "intro/text.md",
@@ -9,23 +15,12 @@
     },
     "steps": [
       {
-        "title": "Mirroring Images",
-        "text": "step1/text.md",
-        "foreground": "step1/foreground.sh"
-      },
-      {
-        "title": "Build the Bootc Image",
-        "text": "step2/text.md"
+        "title": "Environment Overview",
+        "text": "step1/text.md"
       }
     ],
     "finish": {
       "text": "finish/text.md"
     }
-  },
-  "backend": {
-    "imageid": "fedora"
-  },
-  "interface": {
-    "layout": "ide"
   }
 }
