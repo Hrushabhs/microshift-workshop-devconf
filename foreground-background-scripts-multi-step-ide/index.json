@@ -2,7 +2,7 @@
   "title": "Airgapped MicroShift Deployment",
   "description": "Learn to build offline-ready bootc images.",
   "backend": {
-    "imageid": "ubuntu"
+    "imageid": "ubuntu-4GB"
   },
   "interface": {
     "layout": "ide"
