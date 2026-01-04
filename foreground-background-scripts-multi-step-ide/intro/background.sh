@@ -29,9 +29,9 @@ REGISTRY="localhost:5000"
 while read -r IMAGE; do
     [[ -z "$IMAGE" || "$IMAGE" =~ ^# ]] && continue
     DEST_PATH="${IMAGE#*/}"
-    echo "Mirroring $IMAGE -> $REGISTRY/$DEST_PATH"
+    # The --format v2s2 flag fixes the Nginx 500 error
     skopeo copy --all --preserve-digests --format v2s2 --dest-tls-verify=false \
-        docker://"$IMAGE" docker://"$REGISTRY/$DEST_PATH"
+        docker://"$IMAGE" docker://"localhost:5000/$DEST_PATH"
 done < image-list.txt
 
 #####################################
