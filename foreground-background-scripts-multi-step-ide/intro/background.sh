@@ -7,7 +7,7 @@ apt-get update && apt-get install -y skopeo git
 
 # 3. Start Local Registry
 # Runs a containerized registry on the host to act as the airgapped mirror
-podman run -d -p 5000:5000 --restart always --name workshop-registry registry:2
+# podman run -d -p 5000:5000 --restart always --name workshop-registry registry:2
 
 # 4. Clone your workshop repo
 # Clones the hands-on instructions and assets for the session
