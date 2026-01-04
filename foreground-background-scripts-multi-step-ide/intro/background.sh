@@ -6,7 +6,7 @@ set -eux
 #####################################
 
 apt-get update
-apt-get install -y podman skopeo git
+apt-get install -y podman skopeo git curl jq
 
 # Start local registry
 podman run -d \
@@ -18,23 +18,25 @@ podman run -d \
 echo "✅ Registry running on controlplane:5000"
 
 #####################################
-# MIRROR IMAGES (controlplane)
+# CLONE WORKSHOP REPO (controlplane)
 #####################################
 
 git clone https://github.com/hsirsulw/airgapped-microshift-deployment-centos.git /root/workshop
 cd /root/workshop
 
-REGISTRY="localhost:5000"
-
-while read -r IMAGE; do
-    [[ -z "$IMAGE" || "$IMAGE" =~ ^# ]] && continue
-    DEST_PATH="${IMAGE#*/}"
-    # The --format v2s2 flag fixes the Nginx 500 error
-    skopeo copy --all --preserve-digests --format v2s2 --dest-tls-verify=false \
-        docker://"$IMAGE" docker://"localhost:5000/$DEST_PATH"
-done < image-list.txt
-
 #####################################
+# MIRROR IMAGES (ASYNC, BACKGROUND)
+#####################################
+
+echo "🚀 Starting image mirroring in background..."
+echo "📄 Logs: /var/log/local-registry.log"
+
+# Ensure script is executable
+chmod +x local-registry.sh
+
+# Run mirroring in background with logs
+nohup bash local-registry.sh \
+  > /var/log/local-registry.log 2>&1 &
 
 #####################################
 # NODE01 SETUP
@@ -69,3 +71,5 @@ EOF
 
 touch /tmp/finished
 echo "🎉 Workshop environment ready"
+echo "ℹ️ Image mirroring continues in background"
+echo "ℹ️ Check progress: tail -f /var/log/local-registry.log"
