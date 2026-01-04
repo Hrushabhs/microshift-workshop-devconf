@@ -46,7 +46,7 @@ done
 # NODE01 SETUP
 #####################################
 
-ssh node01 <<'EOF'
+ssh root@node01 <<'EOF'
 set -eux
 
 # Install required tools
