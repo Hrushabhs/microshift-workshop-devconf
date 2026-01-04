@@ -61,7 +61,7 @@ sed -i 's/192.168.100.1/controlplane/g' assets/99-offline.conf
 
 # Copy offline registry config
 cp assets/99-offline.conf /etc/containers/registries.conf.d/99-offline.conf
-
+podman pull quay.io/centos-bootc/centos-bootc:stream9
 echo "✅ node01 configured to use controlplane:5000 as registry mirror"
 EOF
 
