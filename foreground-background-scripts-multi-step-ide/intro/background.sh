@@ -35,12 +35,6 @@ while read -r IMAGE; do
 done < image-list.txt
 
 #####################################
-# WAIT FOR NODE01
-#####################################
-
-until ssh node01 "echo node01 ready"; do
-  sleep 2
-done
 
 #####################################
 # NODE01 SETUP
