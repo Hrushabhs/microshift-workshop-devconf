@@ -30,7 +30,7 @@ while read -r IMAGE; do
     [[ -z "$IMAGE" || "$IMAGE" =~ ^# ]] && continue
     DEST_PATH="${IMAGE#*/}"
     echo "Mirroring $IMAGE -> $REGISTRY/$DEST_PATH"
-    skopeo copy --all --preserve-digests --dest-tls-verify=false \
+    skopeo copy --all --preserve-digests --format v2s2 --dest-tls-verify=false \
         docker://"$IMAGE" docker://"$REGISTRY/$DEST_PATH"
 done < image-list.txt
 
