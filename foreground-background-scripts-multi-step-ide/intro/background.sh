@@ -2,11 +2,8 @@
 
 # 1. Install required packages
 # Standard Ubuntu update and installation of required binaries
-apt-get update && apt-get install -y skopeo git git-lfs
+apt-get update && apt-get install -y skopeo git 
 
-# 2. Initialize Git LFS
-# Essential for handling large binary files (RPMs) in your repository
-git lfs install
 
 # 3. Start Local Registry
 # Runs a containerized registry on the host to act as the airgapped mirror
