@@ -1,41 +1,4 @@
 #!/bin/bash
-set -eux
-
-#####################################
-# CONTROLPLANE SETUP
-#####################################
-
-apt-get update
-apt-get install -y podman skopeo git
-
-# Start local registry
-podman run -d \
-  --name workshop-registry \
-  --restart always \
-  -p 5000:5000 \
-  registry:2
-
-echo "✅ Registry running on controlplane:5000"
-
-#####################################
-# MIRROR IMAGES (controlplane)
-#####################################
-
-git clone https://github.com/hsirsulw/airgapped-microshift-deployment-centos.git /root/workshop
-cd /root/workshop
-
-REGISTRY="localhost:5000"
-
-while read -r IMAGE; do
-    [[ -z "$IMAGE" || "$IMAGE" =~ ^# ]] && continue
-    DEST_PATH="${IMAGE#*/}"
-    # The --format v2s2 flag fixes the Nginx 500 error
-    skopeo copy --all --preserve-digests --format v2s2 --dest-tls-verify=false \
-        docker://"$IMAGE" docker://"localhost:5000/$DEST_PATH"
-done < image-list.txt
-
-#####################################
-
 #####################################
 # NODE01 SETUP
 #####################################
@@ -43,24 +6,80 @@ done < image-list.txt
 ssh root@node01 <<'EOF'
 set -eux
 
-# Install required tools
+echo "🧹 Phase 1: Stop and disable Kubernetes services"
+
+systemctl stop kubelet containerd || true
+systemctl disable kubelet || true
+
+#####################################
+# FORCE UNMOUNT BUSY KUBELET VOLUMES
+#####################################
+
+echo "🧹 Phase 2: Lazy-unmount kubelet volumes"
+
+for mount in $(mount | grep /var/lib/kubelet | awk '{print $3}'); do
+    umount -l "$mount" || true
+done
+
+#####################################
+# PURGE KUBERNETES PACKAGES & DATA
+#####################################
+
+echo "🧹 Phase 3: Remove Kubernetes packages and data"
+
+apt-get purge -y kubeadm kubelet kubectl kubernetes-cni cri-tools || true
+apt-get autoremove -y || true
+
+rm -rf /etc/kubernetes \
+       /var/lib/kubelet \
+       /var/lib/etcd \
+       /root/.kube
+
+#####################################
+# WIPE CONTAINER RUNTIME STORAGE
+#####################################
+
+echo "🧹 Phase 4: Wipe containerd storage"
+
+rm -rf /var/lib/containerd/*
+rm -rf /var/lib/containers/
+
+#####################################
+# INSTALL REQUIRED TOOLS (NODE01)
+#####################################
+
+echo "🔧 Installing Podman, Git, Skopeo"
+
 apt-get update
 apt-get install -y podman git skopeo
 
-# Clone workshop repo
+#####################################
+# CLONE WORKSHOP REPO (node01)
+#####################################
+
 git clone https://github.com/hsirsulw/airgapped-microshift-deployment-centos.git /root/workshop
 cd /root/workshop
 
-# Ensure registry config dir exists
+#####################################
+# CONFIGURE OFFLINE REGISTRY MIRROR
+#####################################
+mkdir test11
 mkdir -p /etc/containers/registries.conf.d
 
-# Replace mirror IP with controlplane hostname
 sed -i 's/192.168.100.1/controlplane/g' assets/99-offline.conf
-
-# Copy offline registry config
 cp assets/99-offline.conf /etc/containers/registries.conf.d/99-offline.conf
 
-echo "✅ node01 configured to use controlplane:5000 as registry mirror"
+#####################################
+# PRE-PULL BASE IMAGE (FROM LOCAL REGISTRY)
+#####################################
+
+echo "📦 Pre-pulling bootc base image via local registry"
+
+podman pull quay.io/rhn_engineering_hsirsulw/microshift-killercoda.v1:latest
+
+echo "✅ node01 ready (disk cleaned + registry configured)"
+df -h
+
 EOF
 
 #####################################
@@ -68,4 +87,7 @@ EOF
 #####################################
 
 touch /tmp/finished
+
 echo "🎉 Workshop environment ready"
+echo "ℹ️ Image mirroring continues in background"
+echo "ℹ️ Check progress: tail -f /var/log/local-registry.log"
