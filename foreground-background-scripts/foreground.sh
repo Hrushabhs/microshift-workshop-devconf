@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "🚀 Initializing Airgapped Environment..."
+echo "🚀 testing Initializing Airgapped Environment..."
 echo "📦 Installing tools and mirroring images to local registry..."
 
 # Wait for background script to create the signal file
