@@ -79,6 +79,7 @@ rm -rf /etc/kubernetes \
 echo "🧹 Phase 4: Wipe containerd storage"
 
 rm -rf /var/lib/containerd/*
+rm -rf /var/lib/containers/
 
 #####################################
 # INSTALL REQUIRED TOOLS (NODE01)
