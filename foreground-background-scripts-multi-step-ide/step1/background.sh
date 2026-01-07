@@ -88,7 +88,7 @@ cp assets/99-offline.conf /etc/containers/registries.conf.d/99-offline.conf
 
 echo "📦 Pre-pulling bootc base image via local registry"
 
-podman pull quay.io/rhn_engineering_hsirsulw/microshift-killercoda.v1
+podman pull quay.io/rhn_engineering_hsirsulw/microshift-killercoda.v1:latest
 
 echo "✅ node01 ready (disk cleaned + registry configured)"
 df -h
