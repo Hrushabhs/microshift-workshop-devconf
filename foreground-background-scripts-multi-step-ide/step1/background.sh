@@ -1,17 +1,4 @@
 #!/bin/bash
-set -eux
-
-
-
-#####################################
-# CLONE WORKSHOP REPO (controlplane)
-#####################################
-
-git clone https://github.com/hsirsulw/airgapped-microshift-deployment-centos.git /root/workshop
-cd /root/workshop
-
-
-
 #####################################
 # NODE01 SETUP
 #####################################
@@ -76,7 +63,7 @@ cd /root/workshop
 #####################################
 # CONFIGURE OFFLINE REGISTRY MIRROR
 #####################################
-
+mkdir test11
 mkdir -p /etc/containers/registries.conf.d
 
 sed -i 's/192.168.100.1/controlplane/g' assets/99-offline.conf
